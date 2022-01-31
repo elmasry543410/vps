@@ -1,10 +1,49 @@
-Hosted File:
-Set-LocalUser -Name "Administrator" -Password (ConvertTo-SecureString -AsPlainText "Youtube1234" -Force)
-Get-LocalUser -Name "Administrator" | Enable-LocalUser 
-Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
-tar xf ngrok.zip
-Copy ngrok.exe C:\Windows\System32
-cmd /c echo ./ngrok.exe authtoken "234lh8pSWndyNfNx3ZokLHO2fZi_4rKSZGML9rWPNw52evbCo" >a.ps1
-cmd /c echo cmd /k start ngrok.exe tcp 3389 >>a.ps1
-cmd /c echo ping -n 999999 10.10.10.10 >>a.ps1
-.\a.ps1
+# -*- coding: utf-8 -*-
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoAlertPresentException
+import unittest, time, re
+
+class UntitledTestCase(unittest.TestCase):
+    def setUp(self):
+        self.driver = webdriver.Firefox()
+        self.driver.implicitly_wait(30)
+        self.base_url = "https://www.google.com/"
+        self.verificationErrors = []
+        self.accept_next_alert = True
+    
+    def test_untitled_test_case(self):
+        driver = self.driver
+        driver.get("https://www.mediafire.com/file/n0tp4e83fsffyyo/ready_rdp.zip/file")
+        driver.find_element_by_id("downloadButton").click()
+    
+    def is_element_present(self, how, what):
+        try: self.driver.find_element(by=how, value=what)
+        except NoSuchElementException as e: return False
+        return True
+    
+    def is_alert_present(self):
+        try: self.driver.switch_to_alert()
+        except NoAlertPresentException as e: return False
+        return True
+    
+    def close_alert_and_get_its_text(self):
+        try:
+            alert = self.driver.switch_to_alert()
+            alert_text = alert.text
+            if self.accept_next_alert:
+                alert.accept()
+            else:
+                alert.dismiss()
+            return alert_text
+        finally: self.accept_next_alert = True
+    
+    def tearDown(self):
+        self.driver.quit()
+        self.assertEqual([], self.verificationErrors)
+
+if __name__ == "__main__":
+    unittest.main()
